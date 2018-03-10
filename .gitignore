@@ -1,0 +1,10 @@
+# Compiled python modules
+*.pyc
+
+# Setuptools dist folder and metadata
+/dist/
+/*.egg-info
+
+# Backup files
+*.BAK
+*.bak

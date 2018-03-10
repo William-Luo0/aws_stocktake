@@ -33,19 +33,9 @@ def get_all(remove_empty=False):
   resources["placement_groups"] = get_placement_groups()
   resources["prefix_lists"] = get_prefix_lists()
   resources["reserved"] = get_reserved()
-  # Handle opt-in errors for reserved listings
-  try:
-    resources["reserved_listings"] = get_reserved_listings()
-  except ClientError as e:
-    if e.response["Error"]["Code"] != "OptInRequired":
-      raise
+  resources["reserved_listings"] = get_reserved_listings()
   resources["route_tables"] = get_route_tables()
-  # Handle if scheduled instances aren't available in your region
-  try:
-    resources["scheduled"] = get_scheduled()
-  except ClientError as e:
-    if e.response["Error"]["Code"] != "UnsupportedOperation":
-      raise
+  resources["scheduled"] = get_scheduled()
   resources["sgs"] = get_sgs()
   resources["snapshots"] = get_snapshots()
   resources["spot_fleets"] = get_spot_fleets()
@@ -57,6 +47,7 @@ def get_all(remove_empty=False):
   resources["vpn_connections"] = get_vpn_connections()
   resources["vpn_gateways"] = get_vpn_gateways()
   resources["vpns"] = get_vpns()
+  resources["valid_regions"] = filter_keys.get_regions("ec2")
 
   if remove_empty:
     resources = dict((key,value) for key,value in resources.items() if value)
@@ -99,17 +90,19 @@ def get_ec2_amis():
   fields = ["Name", "ImageId"]
   return get_service("describe_images", "Images", fields, {"Owners": ["self"]})
 
-# To test this
 def get_instances():
-  fields = ["InstanceId", "InstanceType", "ImageId", "LaunchTime"]
-  res = boto3.client("ec2").describe_instances()
-  res = res["Reservations"]
-  instances = []
-  for item in res:
-    instances.extend(item["Instances"])
-  instances[:] = [{key:value for key,value in i.items() if key in fields}
-                  for i in res]
-  return instances
+  fields = ["InstanceId", "InstanceType", "ImageId", "LaunchTime", "Tags"]
+  resources = []
+  for region in filter_keys.get_regions("ec2"):
+    res = boto3.client("ec2", region).describe_instances()
+    res = res["Reservations"]
+    instances = []
+    for item in res:
+      instances.extend(item["Instances"])
+    instances[:] = [{key:value for key,value in i.items() if key in fields}
+                    for i in instances]
+    resources.extend(instances)
+  return resources
 
 def get_igs():
   fields = ["InternetGatewayId", "Attachments"]
@@ -216,7 +209,7 @@ def get_peering_connections():
   return get_service("describe_vpc_peering_connections", "VpcPeeringConnections", fields)
 
 def get_vpcs():
-  fields = ["VpcId", "CidrBlock", "DhcpOptionsId"]
+  fields = ["VpcId", "CidrBlock"]
   return get_service("describe_vpcs", "Vpcs", fields)
 
 def get_vpn_connections():
