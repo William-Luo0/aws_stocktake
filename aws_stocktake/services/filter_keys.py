@@ -13,16 +13,24 @@ def filter_key(service, function, dict_key, fields, fnc_options={}):
         res = res(**fnc_options)
       else:
         res = res()
-      res = res[dict_key]
-      res[:] = [{key:value for key,value in i.items() if key in fields}
-                for i in res]
+
+      # Filter out first level dict key
+      if dict_key:
+        res = res[dict_key]
+
+      # Filter out dict keys inside lists
+      if fields:
+        res[:] = [{key:value for key,value in i.items() if key in fields}
+                  for i in res]
+
       for item in res:
         item.update({"Region": region})
       resource.extend(res)
-      #print("Region: " + region)
-      #print(resource)
+
     except ClientError as e:
-      if e.response["Error"]["Code"] in ("AuthFailure","OptInRequired"):
+      if e.response["Error"]["Code"] in ("AuthFailure", "OptInRequired",
+                                         "NotFoundException",
+                                         "BadRequestException"):
         res = [{"Error": e.response["Error"]["Code"],
                 "Description": e.response["Error"]["Message"],
                 "Region": region,
