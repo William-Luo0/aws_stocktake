@@ -28,14 +28,18 @@ def filter_key(service, function, dict_key, fields, fnc_options={}):
       resource.extend(res)
 
     except ClientError as e:
+      # Error code explanations:
+      # AccessDeniedException - Account isn't authorised to perform action
       if e.response["Error"]["Code"] in ("AuthFailure", "OptInRequired",
                                          "NotFoundException",
-                                         "BadRequestException"):
+                                         "BadRequestException",
+                                         "AccessDeniedException"):
         res = [{"Error": e.response["Error"]["Code"],
                 "Description": e.response["Error"]["Message"],
                 "Region": region,
                 "Service": service,
                 "Function": function}]
+        # resource.extend(res)
       elif e.response["Error"]["Code"] != "UnsupportedOperation":
         raise
 
