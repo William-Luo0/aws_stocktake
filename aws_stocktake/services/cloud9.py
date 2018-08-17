@@ -18,6 +18,7 @@ def get_all(remove_empty=False):
 
     return resources
 
+
 def get_environments():
-  fields = []
-  return get_service("list_environments", "environmentIds", fields)
+    fields = []
+    return get_service("list_environments", "environmentIds", fields)

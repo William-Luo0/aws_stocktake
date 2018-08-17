@@ -19,11 +19,12 @@ def get_all(remove_empty=False):
 
     return resources
 
+
 def get_stack_sets():
-  fields = ["StackSetName", "StackSetId", "Status"]
-  return get_service("list_stack_sets", "Summaries", fields)
+    fields = ["StackSetName", "StackSetId", "Status"]
+    return get_service("list_stack_sets", "Summaries", fields)
+
 
 def get_stacks():
-  fields = ["StackId", "StackName", "StackStatus"]
-  return get_service("list_stacks", "StackSummaries", fields)
-
+    fields = ["StackId", "StackName", "StackStatus"]
+    return get_service("list_stacks", "StackSummaries", fields)

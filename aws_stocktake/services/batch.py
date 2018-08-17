@@ -20,14 +20,17 @@ def get_all(remove_empty=False):
 
     return resources
 
+
 def get_compute_environments():
-  fields = ["computeEnvironmentName", "computeEnviironmentArn", "ecsClusterArn", "state", "serviceRole"]
-  return get_service("describe_compute_environments", "computeEnvironments", fields)
+    fields = ["computeEnvironmentName", "computeEnviironmentArn", "ecsClusterArn", "state", "serviceRole"]
+    return get_service("describe_compute_environments", "computeEnvironments", fields)
+
 
 def get_job_definitions():
-  fields = ["jobDefinitionsName", "jobDefinitionsArn", "revision", "status", "type"]
-  return get_service("describe_job_definitions", "jobDefinitions", fields)
+    fields = ["jobDefinitionsName", "jobDefinitionsArn", "revision", "status", "type"]
+    return get_service("describe_job_definitions", "jobDefinitions", fields)
+
 
 def get_job_queues():
-  fields = ["jobQueueName", "jobQueueArn", "state", "status"]
-  return get_service("describe_job_queues", "jobQueues", fields)
+    fields = ["jobQueueName", "jobQueueArn", "state", "status"]
+    return get_service("describe_job_queues", "jobQueues", fields)

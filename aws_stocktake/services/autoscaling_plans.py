@@ -18,6 +18,7 @@ def get_all(remove_empty=False):
 
     return resources
 
+
 def get_scaling_plans():
-  fields = ["ScalingPlanName", "ScalingPlanVersion", "StatusCode"]
-  return get_service("describe_scaling_plans", "ScalingPlans", fields)
+    fields = ["ScalingPlanName", "ScalingPlanVersion", "StatusCode"]
+    return get_service("describe_scaling_plans", "ScalingPlans", fields)
