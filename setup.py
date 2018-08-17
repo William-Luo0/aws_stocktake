@@ -5,8 +5,7 @@ setup(name='aws_stocktake',
       description='Takes stock of all AWS resources',
       url='http://',
       author='William Luo',
-      author_email=''
+      author_email='',
       license='MIT',
       packages=['aws_stocktake'],
       zip_safe=False)
-
